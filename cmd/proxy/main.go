@@ -16,6 +16,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/mdp/qrterminal/v3"
@@ -41,6 +42,7 @@ type Config struct {
 }
 
 var FlagDomain = flag.String("domain", "", "domain to configure")
+var FlagConfig = flag.String("config", "config.json", "path to configuration file")
 var FlagDebug = flag.Bool("debug", false, "more logs")
 var FlagTxURL = flag.Bool("tx-url", false, "show set domain record url instead of qr")
 var FlagPort = flag.Uint("port", 0, "port of adnl server")
@@ -183,6 +185,9 @@ func loadConfig() (*Config, error) {
 	var cfg Config
 
 	file := "./config.json"
+	if FlagConfig != nil && strings.TrimSpace(*FlagConfig) != "" {
+		file = *FlagConfig
+	}
 	data, err := os.ReadFile(file)
 	if err != nil {
 		var srvKey ed25519.PrivateKey
